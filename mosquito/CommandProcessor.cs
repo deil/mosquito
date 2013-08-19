@@ -8,5 +8,15 @@ namespace Mosquito
         public void Process<T>(T command) where T : ICommand
         {
         }
+
+        public TResult Process<TCommand, TResult>(TCommand command) where TCommand : ICommand
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Process<TCommand, TResult>(TCommand command, Action<TResult> callback) where TCommand : ICommand
+        {
+            throw new NotImplementedException();
+        }
     }
 }

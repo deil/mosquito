@@ -30,6 +30,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -38,6 +39,13 @@
     <Compile Include="IEvent.cs" />
     <Compile Include="ICommandProcessor.cs" />
     <Compile Include="ITaskProcessor.cs" />
+    <Compile Include="Internal\IMosquitoCallbackChannel.cs" />
+    <Compile Include="Internal\IMosquitoChannel.cs" />
+    <Compile Include="ICommandHandler.cs" />
+    <Compile Include="IHandles.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Internal\" />
+  </ItemGroup>
 </Project>

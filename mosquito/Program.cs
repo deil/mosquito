@@ -7,6 +7,12 @@ namespace Mosquito
         public static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+
+            Mosquito.Start();
+
+            Console.ReadKey();
+
+            Mosquito.Stop();
         }
     }
 }

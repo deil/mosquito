@@ -15,9 +15,9 @@ namespace Mosquito.Service.Impl
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     sealed internal class MosquitoChannelImpl : IMosquitoChannel
     {
-        public MosquitoChannelImpl(IWindsorContainer container)
+        public MosquitoChannelImpl(ProcessingQueue queue)
         {
-            _container = container;
+            _queue = queue;
         }
 
         public void SayHello()
@@ -34,6 +34,8 @@ namespace Mosquito.Service.Impl
         {
             if (Logger.IsDebugEnabled)
                 Logger.DebugFormat("New task: {0}", task.GetType().FullName);
+
+            _queue.EnqueueTask(task);
         }
 
         public void ProcessCommand(ICommand command)
@@ -41,17 +43,21 @@ namespace Mosquito.Service.Impl
             if (Logger.IsDebugEnabled)
                 Logger.DebugFormat("New command: {0}", command.GetType().FullName);
 
-            _container.Resolve<IMosquitoCallbackChannel>().SayHello();
+            _queue.EnqueueCommand(command);
         }
 
         public void RaiseEvent(IEvent @event)
         {
             if (Logger.IsDebugEnabled)
                 Logger.DebugFormat("New event: {0}", @event.GetType().FullName);
+
+            _queue.EnqueueEvent(@event);
         }
 
+        #region private
         private ILog Logger { get { return LogManager.GetLogger(GetType()); } }
 
-        private readonly IWindsorContainer _container;
+        private readonly ProcessingQueue _queue;
+        #endregion
     }
 }

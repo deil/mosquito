@@ -50,6 +50,7 @@
       <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
@@ -67,6 +68,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Impl\MosquitoChannelImpl.cs" />
+    <Compile Include="Impl\ProcessingQueue.cs" />
+    <Compile Include="Impl\QueueItem.cs" />
+    <Compile Include="Impl\QueueWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceHost.cs" />
     <Compile Include="MosquitoService.cs" />

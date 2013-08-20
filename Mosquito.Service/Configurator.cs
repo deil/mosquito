@@ -31,6 +31,9 @@ namespace Mosquito.Service
                 Logger.DebugFormat("Registering handler: {0} for command {1}", typeof(THandler).FullName, typeof(TCommand).FullName);
 
             KnownTypesProvider.RegisterType<TCommand>();
+            _container.Register(
+                Component.For<ICommandHandler<TCommand>>().ImplementedBy<THandler>()
+            );
         }
 
         public void RegisterTasks(params ITask[] tasks)

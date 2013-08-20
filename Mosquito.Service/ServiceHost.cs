@@ -13,7 +13,7 @@ namespace Mosquito.Service
 
         public void Open()
         {
-            var channel = new MosquitoChannelImpl(_owner.Container);
+            var channel = new MosquitoChannelImpl(_owner.Queue);
             _serviceHost = new System.ServiceModel.ServiceHost(channel);
             _serviceHost.Open();
         }

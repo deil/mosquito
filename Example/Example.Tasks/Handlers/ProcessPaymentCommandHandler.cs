@@ -11,7 +11,7 @@ namespace Example.Tasks.Handlers
     {
         public void Handle(ProcessPaymentCommand command)
         {
-            
+            return;
         }
     }
 }

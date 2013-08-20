@@ -7,6 +7,9 @@ namespace Mosquito.Core.Internal
     public interface IMosquitoCallbackChannel
     {
         [OperationContract]
+        void SayHello();
+
+        [OperationContract]
         void RaiseEvent(IEvent @event);
     }
 }

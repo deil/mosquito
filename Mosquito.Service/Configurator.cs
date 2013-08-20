@@ -13,6 +13,12 @@ namespace Mosquito.Service
     {
         public Configurator()
         {
+            _container.AddFacility<WcfFacility>()
+                .Register(
+                    Component
+                        .For<IMosquitoCallbackChannel>()
+                        .AsWcfClient(WcfEndpoint.FromConfiguration("NetTcpBinding_IMosquitoCallbackChannel"))
+                );
         }
 
         public void RegisterEventHandler<TEvent>(IHandles<TEvent> handler) where TEvent : IEvent

@@ -12,7 +12,7 @@ namespace Mosquito.Impl
     {
         public void SayHello()
         {
-            Debug.WriteLine("MosquitoCallbackChannelImpl.SayHello() called");
+            Console.WriteLine("MosquitoCallbackChannelImpl.SayHello() called");
         }
 
         public void RaiseEvent(IEvent @event)

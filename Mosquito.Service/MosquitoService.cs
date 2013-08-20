@@ -11,12 +11,14 @@ namespace Mosquito.Service
             _container = container;
         }
 
+        public IWindsorContainer Container { get { return _container; } }
+
         public void Start()
         {
             if (Logger.IsDebugEnabled)
                 Logger.Debug("Opening service host");
 
-            _serviceHost = new ServiceHost();
+            _serviceHost = new ServiceHost(this);
             _serviceHost.Open();
 
             if (Logger.IsInfoEnabled)

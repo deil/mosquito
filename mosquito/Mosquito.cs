@@ -16,10 +16,41 @@ namespace Mosquito
 
         public void RegisterCommand<T>() where T : ICommand
         {
-            KnownTypesProvider.RegisterType<T>();
+            if (_isStarted)
+            {
+                throw new ApplicationException("Mosquito is already started. Operation is not permitted");
+            }
+            else
+            {
+                KnownTypesProvider.RegisterType<T>();
+            }
         }
 
         public void Start()
+        {
+            if (_isStarted)
+                return;
+
+            _isStarted = true;
+            InitContainer();
+            OpenCallbackChannel();
+        }
+        
+        public void Stop()
+        {
+            if (_callbackHost != null)
+            {
+                _callbackHost.Close();
+            }
+
+            _isStarted = false;
+        }
+
+        private bool _isStarted;
+        private IWindsorContainer _container;
+        private CallbackHost _callbackHost;
+
+        private void InitContainer()
         {
             _container = new WindsorContainer();
             _container
@@ -30,18 +61,12 @@ namespace Mosquito
                         .AsWcfClient(WcfEndpoint.FromConfiguration("NetTcpBinding_IMosquitoChannel")),
                     Component.For<ICommandProcessor>().ImplementedBy<CommandProcessor>()
                 );
-
-            /*
-            var instance = _container.Resolve<IMosquitoChannel>();
-            instance.SayHello();
-            _container.Release(instance);
-             */
         }
-        
-        public void Stop()
+
+        private void OpenCallbackChannel()
         {
+            _callbackHost = new CallbackHost();
+            _callbackHost.Open();
         }
-
-        private IWindsorContainer _container;
     }
 }

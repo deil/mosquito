@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
 using Mosquito.Core;
 using Mosquito.Core.Internal;
@@ -17,7 +18,6 @@ namespace Mosquito.Service.Impl
 
         public void EnqueueTask(ITask task)
         {
-            throw new NotImplementedException();
         }
 
         public void ProcessCommand(ICommand command)

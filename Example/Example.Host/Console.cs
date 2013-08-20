@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using Example.Tasks.Commands;
 using Example.Tasks.Handlers;
+using log4net.Config;
 
 namespace Example.Host
 {
@@ -12,6 +13,8 @@ namespace Example.Host
     {
         public static void Main(string[] args)
         {
+            XmlConfigurator.Configure();
+
             var configurator = new Mosquito.Service.Configurator();
             configurator.RegisterCommandHandler<ProcessPaymentCommand, ProcessPaymentCommandHandler>();
             var service = configurator.Build();

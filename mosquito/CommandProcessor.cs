@@ -1,5 +1,4 @@
 using System;
-using Microsoft.Practices.ServiceLocation;
 using Mosquito.Core;
 using Mosquito.Core.Internal;
 
@@ -7,10 +6,14 @@ namespace Mosquito
 {
     sealed public class CommandProcessor : ICommandProcessor
     {
+        public CommandProcessor(IMosquitoChannel channel)
+        {
+            _channel = channel;
+        }
+
         public void Process<T>(T command) where T : ICommand
         {
-            var channel = ServiceLocator.Current.GetInstance<IMosquitoChannel>();
-            channel.ProcessCommand(command);
+            _channel.ProcessCommand(command);
         }
 
         public TResult Process<TCommand, TResult>(TCommand command) where TCommand : ICommand
@@ -22,5 +25,7 @@ namespace Mosquito
         {
             throw new NotImplementedException();
         }
+
+        private readonly IMosquitoChannel _channel;
     }
 }

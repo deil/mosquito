@@ -16,8 +16,7 @@ namespace Example.Client.Console
             mosq.RegisterCommand<ProcessPaymentCommand>();
             mosq.Start();
 
-            var commandProcessor = ServiceLocator.Current.GetInstance<ICommandProcessor>();
-            commandProcessor.Process(new ProcessPaymentCommand {AccountId = 1, Amount = 1200});
+            mosq.CommandProcessor.Process(new ProcessPaymentCommand {AccountId = 1, Amount = 1200});
 
             System.Console.ReadKey();
             mosq.Stop();

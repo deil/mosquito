@@ -36,8 +36,17 @@ namespace Mosquito.Service
             );
         }
 
-        public void RegisterTasks(params ITask[] tasks)
+        public void RegisterCommandHandler<TCommand, THandler, TResult>() where TCommand : ICommand where THandler : ICommandHandler<TCommand, TResult> where TResult : class
         {
+            if (Logger.IsDebugEnabled)
+                Logger.DebugFormat("Registering handler: {0} for command {1} and result type {2}", typeof (THandler).FullName, typeof (TCommand).FullName,
+                                   typeof (TResult).FullName);
+
+            KnownTypesProvider.RegisterType<TCommand>();
+            KnownTypesProvider.RegisterCallbackType<TResult>();
+            _container.Register(
+                Component.For<ICommandHandler<TCommand, TResult>>().ImplementedBy<THandler>()
+                );
         }
 
         public MosquitoService Build()

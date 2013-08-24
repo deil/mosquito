@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using Mosquito.Core;
+using Mosquito.Core.Internal;
+using Mosquito.Service.Impl;
 
-namespace Mosquito.Service.Impl
+namespace Mosquito.Service.Processing
 {
     sealed public class ProcessingQueue
     {
@@ -23,6 +23,24 @@ namespace Mosquito.Service.Impl
             lock (_queue)
             {
                 _queue.Enqueue(new QueueItem(command));
+                Monitor.Pulse(_queue);
+            }
+        }
+
+        public void EnqueueCommand(ICommand command, Action<object, object> callback, object state)
+        {
+            lock (_queue)
+            {
+                _queue.Enqueue(new QueueItem(command) {CompletionCallback = callback, State = state});
+                Monitor.Pulse(_queue);
+            }
+        }
+
+        public void EnqueueCommand(ICommand command, Type resultType, Action<object, object> callback, object state)
+        {
+            lock (_queue)
+            {
+                _queue.Enqueue(new QueueItem(command) {CompletionCallback = callback, ResultType = resultType, State = state});
                 Monitor.Pulse(_queue);
             }
         }

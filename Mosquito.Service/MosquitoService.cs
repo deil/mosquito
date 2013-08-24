@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Castle.Windsor;
 using log4net;
 using Mosquito.Service.Impl;
+using Mosquito.Service.Processing;
 
 namespace Mosquito.Service
 {
@@ -11,6 +13,9 @@ namespace Mosquito.Service
         public MosquitoService(IWindsorContainer container)
         {
             _container = container;
+
+            _queue = new ProcessingQueue();
+            _workers = new WorkersManager(_queue, new HandlersFactory(_container));
         }
 
         public IWindsorContainer Container { get { return _container; } }
@@ -25,8 +30,7 @@ namespace Mosquito.Service
             _serviceHost = new ServiceHost(this);
             _serviceHost.Open();
 
-            _worker = new Thread(() => new QueueWorker(_queue, _container).Start());
-            _worker.Start();
+            _workers.Run();
 
             if (Logger.IsInfoEnabled)
                 Logger.Info("Mosquito service was successfully started");
@@ -35,14 +39,19 @@ namespace Mosquito.Service
         public void Stop()
         {
             _serviceHost.Close();
+            _workers.Stop();
         }
+
+        #region private
 
         private ILog Logger { get { return LogManager.GetLogger(GetType()); } }
 
         private readonly IWindsorContainer _container;
         private ServiceHost _serviceHost;
-        private readonly ProcessingQueue _queue = new ProcessingQueue();
-        private Thread _worker;
+        private readonly ProcessingQueue _queue;
+        private readonly WorkersManager _workers;
+        
+        #endregion
     }
 }
 

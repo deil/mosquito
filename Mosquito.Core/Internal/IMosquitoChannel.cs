@@ -17,6 +17,9 @@ namespace Mosquito.Core.Internal
         void ProcessCommand(ICommand command);
 
         [OperationContract]
+        void Invoke(OperationInvocationInfo operation);
+
+        [OperationContract]
         void RaiseEvent(IEvent @event);
     }
 }

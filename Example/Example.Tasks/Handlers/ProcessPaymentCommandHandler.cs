@@ -7,11 +7,11 @@ using Mosquito.Core;
 
 namespace Example.Tasks.Handlers
 {
-    public class ProcessPaymentCommandHandler : ICommandHandler<ProcessPaymentCommand>
+    public class ProcessPaymentCommandHandler : ICommandHandler<ProcessPaymentCommand, decimal[]>
     {
-        public void Handle(ProcessPaymentCommand command)
+        public decimal[] Handle(ProcessPaymentCommand command)
         {
-            return;
+            return new[] {command.AccountId, command.Amount};
         }
     }
 }

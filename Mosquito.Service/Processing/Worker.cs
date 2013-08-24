@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using Castle.Windsor;
 using Mosquito.Core;
 
-namespace Mosquito.Service.Impl
+namespace Mosquito.Service.Processing
 {
-    sealed internal class QueueWorker
+    sealed internal class Worker
     {
-        public QueueWorker(ProcessingQueue queue, IWindsorContainer container)
+        public Worker(ProcessingQueue queue, HandlersFactory handlersFactory)
         {
             _queue = queue;
-            _container = container;
+            _handlersFactory = handlersFactory;
         }
 
         public void Start()
@@ -29,7 +25,7 @@ namespace Mosquito.Service.Impl
         }
 
         private readonly ProcessingQueue _queue;
-        private readonly IWindsorContainer _container;
+        private readonly HandlersFactory _handlersFactory;
 
         private void ProcessItem(QueueItem item)
         {
@@ -37,13 +33,18 @@ namespace Mosquito.Service.Impl
             {
                 if (item.Command != null)
                 {
-                    var handlerType = typeof (ICommandHandler<>).MakeGenericType(item.Command.GetType());
-                    var handlers = _container.ResolveAll(handlerType);
-                    foreach (var handler in handlers)
+                    var result = _handlersFactory.HandleCommand(item.Command, item.ResultType);
+                    if (item.CompletionCallback != null)
                     {
-                        var handleMethod = handler.GetType().GetMethod("Handle");
-                        handleMethod.Invoke(handler, new[] {item.Command});
+                        item.CompletionCallback(result, item.State);
                     }
+                }
+                else if (item.Event != null)
+                {
+                    _handlersFactory.HandleEvent(item.Event);
+                }
+                else if (item.Task != null)
+                {
                 }
             }
             catch (Exception ex)

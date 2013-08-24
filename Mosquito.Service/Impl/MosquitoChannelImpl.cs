@@ -9,15 +9,18 @@ using Castle.Windsor;
 using log4net;
 using Mosquito.Core;
 using Mosquito.Core.Internal;
+using Mosquito.Service.Processing;
+using Message = Mosquito.Core.Bus.Message;
 
 namespace Mosquito.Service.Impl
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
     sealed internal class MosquitoChannelImpl : IMosquitoChannel
     {
-        public MosquitoChannelImpl(ProcessingQueue queue)
+        public MosquitoChannelImpl(ProcessingQueue queue, IWindsorContainer container)
         {
             _queue = queue;
+            _container = container;
         }
 
         public void SayHello()
@@ -46,6 +49,14 @@ namespace Mosquito.Service.Impl
             _queue.EnqueueCommand(command);
         }
 
+        public void Invoke(OperationInvocationInfo operation)
+        {
+            if (Logger.IsDebugEnabled)
+                Logger.DebugFormat("Invoke: {0}", operation.Id.ToString());
+
+            new TargetBus(_container.Resolve<IMosquitoCallbackChannel>(), _queue).ReceiveAndReply(new Message {Id = operation.Id, Data = operation.Parameter});
+        }
+
         public void RaiseEvent(IEvent @event)
         {
             if (Logger.IsDebugEnabled)
@@ -58,6 +69,8 @@ namespace Mosquito.Service.Impl
         private ILog Logger { get { return LogManager.GetLogger(GetType()); } }
 
         private readonly ProcessingQueue _queue;
+        private readonly IWindsorContainer _container;
+
         #endregion
     }
 }

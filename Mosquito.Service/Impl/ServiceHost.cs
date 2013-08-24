@@ -1,8 +1,7 @@
 using System;
 using Mosquito.Core.Internal;
-using Mosquito.Service.Impl;
 
-namespace Mosquito.Service
+namespace Mosquito.Service.Impl
 {
     public class ServiceHost : IDisposable
     {
@@ -13,7 +12,7 @@ namespace Mosquito.Service
 
         public void Open()
         {
-            var channel = new MosquitoChannelImpl(_owner.Queue);
+            var channel = new MosquitoChannelImpl(_owner.Queue, _owner.Container);
             _serviceHost = new System.ServiceModel.ServiceHost(channel);
             _serviceHost.Open();
         }

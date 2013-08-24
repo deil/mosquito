@@ -7,12 +7,12 @@ namespace Mosquito.Core
         void Execute();
     }
 
-    public interface ITask<TIn>
+    public interface ITask<in TIn>
     {
         void Execute(TIn param);
     }
 
-    public interface ITask<TIn, TOut>
+    public interface ITask<in TIn, out TOut>
     {
         TOut Execute(TIn param);
     }

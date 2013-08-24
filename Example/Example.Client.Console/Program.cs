@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Example.Tasks.Commands;
+using log4net;
 using Microsoft.Practices.ServiceLocation;
 using Mosquito.Core;
 
@@ -13,12 +14,16 @@ namespace Example.Client.Console
         static void Main(string[] args)
         {
             var mosq = new Mosquito.Mosquito();
-            mosq.RegisterCommand<ProcessPaymentCommand>();
+            mosq.RegisterCommand<ProcessPaymentCommand, decimal[]>();
             mosq.Start();
 
-            mosq.CommandProcessor.Process(new ProcessPaymentCommand {AccountId = 1, Amount = 1200});
+            var startDate = DateTime.Now;
 
-            System.Console.ReadKey();
+            var result = mosq.CommandProcessor.Process<ProcessPaymentCommand, decimal[]>(new ProcessPaymentCommand {AccountId = 1, Amount = 1200});
+            System.Console.WriteLine(string.Join(", ", result.ToArray()));
+
+            System.Console.WriteLine(DateTime.Now - startDate);
+
             mosq.Stop();
         }
     }

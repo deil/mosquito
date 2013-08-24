@@ -34,10 +34,20 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bus\IBus.cs" />
+    <Compile Include="Bus\IRemoteEndpoint.cs" />
+    <Compile Include="Bus\Message.cs" />
+    <Compile Include="Internal\ICallbackProcessor.cs" />
     <Compile Include="Internal\KnownTypesProvider.cs" />
+    <Compile Include="Internal\Operation.cs" />
+    <Compile Include="Internal\OperationInvocationInfo.cs" />
+    <Compile Include="Internal\OperationResult.cs" />
+    <Compile Include="Processing\Operation.cs" />
+    <Compile Include="Processing\OperationType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ITask.cs" />
     <Compile Include="ICommand.cs" />

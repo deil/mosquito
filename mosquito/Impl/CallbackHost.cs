@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Mosquito.Impl;
+using Mosquito.Core.Internal;
 
-namespace Mosquito
+namespace Mosquito.Impl
 {
     sealed public class CallbackHost : IDisposable
     {
-        public void Open()
+        public void Open(ICallbackProcessor callbackProcessor)
         {
-            _serviceHost = new System.ServiceModel.ServiceHost(typeof(MosquitoCallbackChannelImpl));
+            var callbackChannel = new MosquitoCallbackChannelImpl(callbackProcessor);
+            _serviceHost = new System.ServiceModel.ServiceHost(callbackChannel);
             _serviceHost.Open();
         }
 

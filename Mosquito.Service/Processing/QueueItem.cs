@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Mosquito.Core;
 
-namespace Mosquito.Service.Impl
+namespace Mosquito.Service.Processing
 {
     sealed public class QueueItem
     {
@@ -26,5 +23,8 @@ namespace Mosquito.Service.Impl
         public readonly ITask Task;
         public readonly ICommand Command;
         public readonly IEvent Event;
+        public Action<object, object> CompletionCallback;
+        public object State;
+        public Type ResultType;
     }
 }

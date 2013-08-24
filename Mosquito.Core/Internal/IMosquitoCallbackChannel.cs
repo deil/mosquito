@@ -4,6 +4,7 @@ using System.ServiceModel;
 namespace Mosquito.Core.Internal
 {
     [ServiceContract]
+    [ServiceKnownType("GetRegisteredCallbackTypes", typeof(KnownTypesProvider))]
     public interface IMosquitoCallbackChannel
     {
         [OperationContract]
@@ -11,5 +12,8 @@ namespace Mosquito.Core.Internal
 
         [OperationContract]
         void RaiseEvent(IEvent @event);
+
+        [OperationContract]
+        void Callback(OperationResult result);
     }
 }

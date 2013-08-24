@@ -3,7 +3,9 @@ using Castle.Facilities.WcfIntegration;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Mosquito.Core;
+using Mosquito.Core.Bus;
 using Mosquito.Core.Internal;
+using Mosquito.Impl;
 
 namespace Mosquito
 {
@@ -14,7 +16,7 @@ namespace Mosquito
             get { return _container.Resolve<ICommandProcessor>(); }
         }
 
-        public void RegisterCommand<T>() where T : ICommand
+        public void RegisterCommand<TCommand, TResult>() where TCommand : ICommand
         {
             if (_isStarted)
             {
@@ -22,7 +24,8 @@ namespace Mosquito
             }
             else
             {
-                KnownTypesProvider.RegisterType<T>();
+                KnownTypesProvider.RegisterType<TCommand>();
+                KnownTypesProvider.RegisterCallbackType<TResult>();
             }
         }
 
@@ -33,6 +36,10 @@ namespace Mosquito
 
             _isStarted = true;
             InitContainer();
+
+            _bus = new InitiatorBus(_container.Resolve<IMosquitoChannel>());
+            _container.Register(Component.For<IBus>().Instance(_bus));
+
             OpenCallbackChannel();
         }
         
@@ -48,6 +55,7 @@ namespace Mosquito
 
         private bool _isStarted;
         private IWindsorContainer _container;
+        private InitiatorBus _bus;
         private CallbackHost _callbackHost;
 
         private void InitContainer()
@@ -59,14 +67,14 @@ namespace Mosquito
                     Component
                         .For<IMosquitoChannel>()
                         .AsWcfClient(WcfEndpoint.FromConfiguration("NetTcpBinding_IMosquitoChannel")),
-                    Component.For<ICommandProcessor>().ImplementedBy<CommandProcessor>()
+                    Component.For<ICommandProcessor>().ImplementedBy<CommandProcessor>().Forward<ICallbackProcessor>()
                 );
         }
 
         private void OpenCallbackChannel()
         {
             _callbackHost = new CallbackHost();
-            _callbackHost.Open();
+            _callbackHost.Open(new CallbackProcessor(_bus));
         }
     }
 }

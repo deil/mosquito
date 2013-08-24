@@ -16,7 +16,7 @@ namespace Example.Host
             XmlConfigurator.Configure();
 
             var configurator = new Mosquito.Service.Configurator();
-            configurator.RegisterCommandHandler<ProcessPaymentCommand, ProcessPaymentCommandHandler>();
+            configurator.RegisterCommandHandler<ProcessPaymentCommand, ProcessPaymentCommandHandler, decimal[]>();
             var service = configurator.Build();
             service.Start();
             Thread.Sleep(new TimeSpan(1, 0, 0));

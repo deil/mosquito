@@ -63,7 +63,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CallbackHost.cs" />
+    <Compile Include="Impl\CallbackProcessor.cs" />
+    <Compile Include="Impl\InitiatorBus.cs" />
+    <Compile Include="Impl\CallbackHost.cs" />
     <Compile Include="Configurator.cs" />
     <Compile Include="Impl\MosquitoCallbackChannelImpl.cs" />
     <Compile Include="Event.cs" />
